@@ -23,9 +23,9 @@ def signup(user:schemas.UserCreate,db:Session = Depends(database.get_db)):
     access_token = auth.create_access_token(data={"sub":user.username})
     return {"access_token":access_token,"token_type":"bearer"}
 @router.post("/login", response_model=schemas.Token)
-def login(user: schemas.UserLogin, db: Session = Depends(database.get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
-    if not db_user or not auth.verify_password(user.password, db_user.password):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.username == form_data.username).first()
+    if not user or not auth.verify_password(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     access_token = auth.create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}

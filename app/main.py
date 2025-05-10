@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from app.database import engine
+from app.database import engine,create_tables
 from app import models
-from app.routes import user
-models.Base.metadata.create_all(bind=engine)
+from app.routes import user,todo
+
 app = FastAPI()
+models.Base.metadata.create_all(bind=engine)
 app.include_router(user.router)
-# app.include_router(todo.router)
+app.include_router(todo.router)
+create_tables()
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FastAPI Todo App"}
