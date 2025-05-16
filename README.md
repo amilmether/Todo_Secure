@@ -97,14 +97,6 @@ app/
 
 ---
 
-## ✅ Todo
-
-- [ ] Add testing using `pytest`
-- [ ] Add Docker support
-- [ ] Connect a frontend (HTML or React)
-- [ ] Deploy to Railway/Render
-
----
 
 ## 📄 License
 
