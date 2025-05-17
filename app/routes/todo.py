@@ -1,12 +1,15 @@
 from fastapi import APIRouter,Depends,HTTPException,status
 from sqlalchemy.orm import Session
-from app import models,schemas,database,auth
+from app.db import models,database
+from app import auth
 from typing import List
 from jose import JWTError,jwt
 from fastapi.security import OAuth2PasswordBearer
 import os 
 from dotenv import load_dotenv
 from datetime import datetime
+
+from app.schemas import schemas
 
 load_dotenv()
 

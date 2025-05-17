@@ -15,7 +15,7 @@ SessionLocal = sessionmaker(autoflush=False,autocommit=False,bind=engine)
 Base = declarative_base()
 
 def create_tables():
-    from app import models
+    from app.db import models
     Base.metadata.create_all(bind=engine)
 
 def get_db():
