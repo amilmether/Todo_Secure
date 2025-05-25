@@ -9,6 +9,9 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 from app.schemas import schemas
+from app.ws import manager
+import asyncio
+from fastapi import WebSocket, WebSocketDisconnect
 
 load_dotenv()
 
@@ -39,6 +42,7 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(database.get_db)
     db.add(new_todo)
     db.commit()
     db.refresh(new_todo)
+    asyncio.create_task(manager.broadcast(f"Todo created:{new_todo.task}"))
     return new_todo
 
 @router.get("/", response_model=List[schemas.TodoOut])
