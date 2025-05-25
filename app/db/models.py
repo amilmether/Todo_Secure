@@ -1,26 +1,24 @@
-from sqlmodel import SQLModel,Field,Relationship
-from typing import Optional,List
+from sqlmodel import SQLModel, Field, Relationship
+from pydantic import EmailStr
 from datetime import datetime
+from typing import Optional, List
 
-class User(SQLModel,table=True):
-    __tablename__="Users"
-    id:Optional[int] = Field(default=None,primary_key=True,index=True)
-    username:str = Field(index=True,nullable=False,unique=True)
-    email:str=Field(nullable==False)
-    password:str=Field(nullable=False)
+# SQLModel for User table
+class User(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    username: str = Field(index=True, unique=True)
+    email: EmailStr = Field(index=True, unique=True)
+    hashed_password: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    todos: List["Todo"] = Relationship(back_populates="user")  # Relationship to Todo
 
-    todos:List["Todo"]=Relationship(back_populates="owner")
-
-class Todo(SQLModel,table=True):
-    __tablename__="todos"
-
-    id:Optional[int] = Field(default=None,primary_key=True,index=True)
-    title: str =Field(nullable=False)
+# SQLModel for Todo table
+class Todo(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
     description: Optional[str] = None
-    done_by: Optional[datetime] = None
+    done_by: datetime
     is_completed: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
-    owner_id: int = Field(foreign_key="users.id")
-    owner: Optional[User] = Relationship(back_populates="todos")
-
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")  # Correct foreign key
+    user: Optional["User"] = Relationship(back_populates="todos")  # Back-reference to User
